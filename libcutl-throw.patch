@@ -1,0 +1,94 @@
+--- libcutl-1.10.0/cutl/shared-ptr/base.hxx.orig	2013-02-09 09:10:00.000000000 +0100
++++ libcutl-1.10.0/cutl/shared-ptr/base.hxx	2024-02-11 21:10:58.474566198 +0100
+@@ -31,17 +31,17 @@ extern LIBCUTL_EXPORT cutl::share shared
+ extern LIBCUTL_EXPORT cutl::share exclusive;
+ 
+ LIBCUTL_EXPORT void*
+-operator new (std::size_t, cutl::share) throw (std::bad_alloc);
++operator new (std::size_t, cutl::share);
+ 
+ LIBCUTL_EXPORT void
+-operator delete (void*, cutl::share) throw ();
++operator delete (void*, cutl::share) noexcept;
+ 
+ namespace cutl
+ {
+   struct LIBCUTL_EXPORT not_shared: exception
+   {
+     virtual char const*
+-    what () const throw ();
++    what () const noexcept;
+   };
+ 
+   struct LIBCUTL_EXPORT shared_base
+@@ -61,13 +61,13 @@ namespace cutl
+     _ref_count () const;
+ 
+     void*
+-    operator new (std::size_t, share) throw (std::bad_alloc);
++    operator new (std::size_t, share);
+ 
+     void
+-    operator delete (void*, share) throw ();
++    operator delete (void*, share) noexcept;
+ 
+     void
+-    operator delete (void*) throw ();
++    operator delete (void*) noexcept;
+ 
+   protected:
+     std::size_t counter_;
+--- libcutl-1.10.0/cutl/shared-ptr/base.cxx.orig	2013-02-09 09:10:00.000000000 +0100
++++ libcutl-1.10.0/cutl/shared-ptr/base.cxx	2024-02-11 21:11:23.077766244 +0100
+@@ -16,7 +16,7 @@ cutl::share exclusive = cutl::share (2);
+ namespace cutl
+ {
+   char const* not_shared::
+-  what () const throw ()
++  what () const noexcept
+   {
+     return "object is not shared";
+   }
+@@ -25,7 +25,7 @@ namespace cutl
+ //
+ //
+ void*
+-operator new (size_t n, cutl::share s) throw (std::bad_alloc)
++operator new (size_t n, cutl::share s)
+ {
+   if (s == shared)
+   {
+@@ -45,7 +45,7 @@ operator new (size_t n, cutl::share s) t
+ }
+ 
+ void
+-operator delete (void* p, cutl::share s) throw ()
++operator delete (void* p, cutl::share s) noexcept
+ {
+   // This version of operator delete is only called when the c-tor
+   // fails. In this case there is no object and we can just free the
+--- libcutl-1.10.0/cutl/shared-ptr/base.ixx.orig	2013-02-09 09:10:00.000000000 +0100
++++ libcutl-1.10.0/cutl/shared-ptr/base.ixx	2024-02-11 21:16:46.332681688 +0100
+@@ -59,19 +59,19 @@ namespace cutl
+   }
+ 
+   inline void* shared_base::
+-  operator new (std::size_t n, share) throw (std::bad_alloc)
++  operator new (std::size_t n, share)
+   {
+     return ::operator new (n);
+   }
+ 
+   inline void shared_base::
+-  operator delete (void* p, share) throw ()
++  operator delete (void* p, share) noexcept
+   {
+     ::operator delete (p);
+   }
+ 
+   inline void shared_base::
+-  operator delete (void* p) throw ()
++  operator delete (void* p) noexcept
+   {
+     ::operator delete (p);
+   }

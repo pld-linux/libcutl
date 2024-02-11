@@ -12,12 +12,13 @@ Group:		Libraries
 Source0:	https://www.codesynthesis.com/download/libcutl/1.10/%{name}-%{version}.tar.bz2
 # Source0-md5:	462930494a5e7094ea14b00f3767f6af
 Patch0:		%{name}-boost.patch
+Patch1:		%{name}-throw.patch
 URL:		https://www.codesynthesis.com/projects/libcutl/
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
 BuildRequires:	boost-devel >= 1.54.0
 BuildRequires:	expat-devel >= 1.95
-BuildRequires:	libstdc++-devel
+BuildRequires:	libstdc++-devel >= 6:4.7
 BuildRequires:	libtool >= 2:2
 BuildRequires:	pkgconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -36,7 +37,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki cutl
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	boost-devel >= 1.54.0
-Requires:	libstdc++-devel
+Requires:	libstdc++-devel >= 6:4.7
 
 %description devel
 Header files for cutl library.
@@ -59,6 +60,7 @@ Statyczna biblioteka cutl.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 # boost (as of 1.82) includes C++ <version> header; take out version file from include path
 %{__mv} version version.txt
