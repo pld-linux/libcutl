@@ -59,8 +59,8 @@ Statyczna biblioteka cutl.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
+%patch -P0 -p1
+%patch -P1 -p1
 
 # boost (as of 1.82) includes C++ <version> header; take out version file from include path
 %{__mv} version version.txt
